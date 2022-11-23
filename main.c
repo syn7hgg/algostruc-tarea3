@@ -108,7 +108,6 @@ bool buscaElemento(AB T, char a) {
 }
 
 void charAMorse(AB T, FILE *f, char a) {
-    printf("\nCaracter: %c", a);
     if (a == ' ') {
         fprintf(f, "  ");
         return;
@@ -137,18 +136,19 @@ void opcion1(AB T, char nom[200]) {
     fgets(linea, 2000, f);
     fclose(f);
 
-    f = fopen(nom, "a");
+    f = fopen(nom, "w");
+
+    if (linea[strlen(linea)-1] == '\n') { linea[strlen(linea)-1] = '\0'; }
+
+    fprintf(f, linea);
     fprintf(f, "\n");
 
-    if (linea[strlen(linea)-1] == "\n") { linea[strlen(linea)-1] = "\0"; }
-
     for (int i = 0; i < strlen(linea); i++) {
-        printf("\n%c", linea[i]);
         charAMorse(T, f, linea[i]);
     }
     fclose(f);
 
-    printf("\nCodificación realizada.");
+    printf("Codificación realizada.");
 }
 
 void menu(AB T) {
