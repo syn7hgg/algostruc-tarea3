@@ -11,6 +11,7 @@ struct nodoArbol {
     struct nodoArbol *der;
 };
 typedef struct nodoArbol *AB;
+int cont;
 
 AB creaNodo(char valor)
 {
@@ -109,7 +110,7 @@ bool buscaElemento(AB T, char a) {
 
 void charAMorse(AB T, FILE *f, char a) {
     if (a == ' ') {
-        fprintf(f, "  ");
+        fprintf(f, " ");
         return;
     }
     if (a == T -> info) { 
@@ -126,6 +127,22 @@ void charAMorse(AB T, FILE *f, char a) {
     }
 }
 
+void morseAChar(AB T, FILE *f, char caracter[1000]) {
+    if (caracter[cont] == ' ') {
+        fprintf(f, "%c", T->info);
+        cont++;
+        return;
+    }
+    if (caracter[cont] == '.') {
+        cont++;
+        return morseAChar(T -> izq, f, caracter);
+    }
+    if (caracter[cont] == '-') {
+        cont++;
+        return morseAChar(T -> der, f, caracter);
+    }
+}
+
 void opcion1(AB T, char nom[200]) {
     char linea[2000];
     FILE *f = fopen(nom, "r");
@@ -138,7 +155,7 @@ void opcion1(AB T, char nom[200]) {
 
     f = fopen(nom, "w");
 
-    if (linea[strlen(linea)-1] == '\n') { linea[strlen(linea)-1] = '\0'; }
+    if (linea[strlen(linea)-1] == '\n') { linea[strlen(linea)-1] = ' '; }
 
     fprintf(f, linea);
     fprintf(f, "\n");
@@ -149,6 +166,52 @@ void opcion1(AB T, char nom[200]) {
     fclose(f);
 
     printf("Codificación realizada.");
+}
+
+void opcion2(AB T, char nom[200]) {
+    char linea[10000], caracter[1000];
+    int carCont = 0;
+    FILE *f = fopen(nom, "r");
+    if (f == NULL) {
+        printf("\nArchivo inválido. Terminando programa.");
+        exit(1);
+    }
+    fgets(linea, 10000, f);
+    fclose(f);
+
+    f = fopen(nom, "w");
+    if (linea[strlen(linea)-1] == '\n') { linea[strlen(linea)-1] = ' '; }
+
+    fprintf(f, linea);
+    fprintf(f, "\n");
+
+    strcpy(caracter, "");
+    for (int i = 0; i < strlen(linea); i++) {
+        if (linea[i] == ' ' && linea[i+1] == ' ') {
+            caracter[carCont] = ' ';
+                morseAChar(T, f, caracter);
+                memset(caracter, 0, sizeof(caracter));
+                cont = 0;
+                carCont = 0;
+                fprintf(f, " ");
+                i++;
+        } else {
+            if (linea[i] == ' ') {
+                caracter[carCont] = ' ';
+                morseAChar(T, f, caracter);
+                memset(caracter, 0, sizeof(caracter));
+                cont = 0;
+                carCont = 0;
+            } else {
+                caracter[carCont] = linea[i];
+                carCont++;
+            }
+        }
+    }
+
+    fclose(f);
+
+    printf("Decodificación realizada.");
 }
 
 void menu(AB T) {
@@ -173,6 +236,7 @@ void menu(AB T) {
             printf("\nNombre del archivo de entrada: ");
             scanf("%s", &nom);
             // Morse a natural
+            opcion2(T, nom);
             break;
         default:
             printf("\n\nHasta luego! :D");
@@ -184,6 +248,7 @@ int main() {
     setlocale(LC_ALL, "");
     AB T = creaAB();
 
+    cont = 0;
     menu(T);
 
     printf("\n\n");
