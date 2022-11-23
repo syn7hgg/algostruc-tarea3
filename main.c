@@ -13,8 +13,7 @@ struct nodoArbol {
 typedef struct nodoArbol *AB;
 int cont;
 
-AB creaNodo(char valor)
-{
+AB creaNodo(char valor) {
    AB aux;
    aux = (AB)malloc(sizeof(struct nodoArbol));
    if (aux != NULL)
@@ -31,8 +30,7 @@ AB creaNodo(char valor)
    return aux;
 }
 
-AB creaAB()
-{
+AB creaAB() {
     AB T;
     T = creaNodo('#');
     T->izq = creaNodo('E');
@@ -189,12 +187,12 @@ void opcion2(AB T, char nom[200]) {
     for (int i = 0; i < strlen(linea); i++) {
         if (linea[i] == ' ' && linea[i+1] == ' ') {
             caracter[carCont] = ' ';
-                morseAChar(T, f, caracter);
-                memset(caracter, 0, sizeof(caracter));
-                cont = 0;
-                carCont = 0;
-                fprintf(f, " ");
-                i++;
+            morseAChar(T, f, caracter);
+            memset(caracter, 0, sizeof(caracter));
+            cont = 0;
+            carCont = 0;
+            fprintf(f, " ");
+            i++;
         } else {
             if (linea[i] == ' ') {
                 caracter[carCont] = ' ';
@@ -211,7 +209,7 @@ void opcion2(AB T, char nom[200]) {
 
     fclose(f);
 
-    printf("Decodificación realizada.");
+    printf("Decodificación realizada.\n");
 }
 
 void menu(AB T) {
@@ -245,11 +243,13 @@ void menu(AB T) {
 }
 
 int main() {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "es");
     AB T = creaAB();
 
-    cont = 0;
-    menu(T);
+    while (true) {
+        cont = 0;
+        menu(T);
+    }
 
     printf("\n\n");
     return 0;
